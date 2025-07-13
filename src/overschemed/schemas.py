@@ -8,7 +8,7 @@ from overschemed.domain import Order
 class OrderIn(BaseModel):
     customer_name: str
     bagel_type: str
-    toppings: list[str] = []
+    toppings: list[str] = Field(default_factory=list)
     quantity: int = 1
     model_config = ConfigDict(extra="forbid")
 
@@ -48,7 +48,7 @@ def to_domain(source) -> Order:
         created_at=data.get("created_at") or datetime.utcnow(),
     )
 
-def from_domain(domain: Order, target):
+def from_domain(domain: Order, target: type):
     if target is OrderDB:
         return OrderDB(**domain.__dict__)
     if target is OrderOut:

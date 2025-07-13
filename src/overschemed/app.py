@@ -3,7 +3,7 @@ Run: uv run uvicorn overschemed.app:app --reload
 """
 from fastapi import FastAPI, HTTPException
 from sqlmodel import SQLModel, create_engine, Session
-from overschemed.domain import Order
+from overschemed.domain import Order  # noqa: F401
 from overschemed.schemas import OrderIn, OrderOut, OrderDB, to_domain, from_domain
 
 engine = create_engine("sqlite:///:memory:", echo=False)
@@ -19,7 +19,8 @@ def create_order(order_in: OrderIn):
         s.add(db_obj)
         s.commit()
         s.refresh(db_obj)
-        return from_domain(to_domain(db_obj), OrderOut)
+        domain_obj = to_domain(db_obj)
+        return from_domain(domain_obj, OrderOut)
 
 @app.get("/orders/{oid}", response_model=OrderOut)
 def read_order(oid: int):
@@ -27,4 +28,5 @@ def read_order(oid: int):
         row = s.get(OrderDB, oid)
         if not row:
             raise HTTPException(404)
-        return from_domain(to_domain(row), OrderOut)
+        domain_obj = to_domain(row)
+        return from_domain(domain_obj, OrderOut)
