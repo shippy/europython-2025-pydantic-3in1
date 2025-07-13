@@ -34,9 +34,12 @@ class BagelOrderDB(BagelOrderBase, SQLModel, table=True):
 class BagelOrderCreate(BagelOrderBase):
     model_config = ConfigDict(extra="forbid")
 
-class BagelOrderRead(BagelOrderDB):
+class BagelOrderRead(BagelOrderBase):
     """What we return to clients (includes DB fields)."""
-    # FIXME: Actually need to fix inheritance here
+    id: int
+    status: str
+    created_at: datetime
+    toppings: list[str]
 
 # -------- LLM layer --------
 class BagelOrderLLM(BagelOrderBase):
