@@ -7,11 +7,16 @@ from overschemed.domain import Order  # noqa: F401
 from overschemed.schemas import OrderIn, OrderOut, OrderDB, to_domain, from_domain
 from typing import Annotated, Generator
 from fastapi import Depends
+from contextlib import asynccontextmanager
 
 engine = create_engine("sqlite:///:memory:", echo=False)
-SQLModel.metadata.create_all(engine)
 
-app = FastAPI(title="Bounded-Contexts API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    SQLModel.metadata.create_all(engine)
+    yield
+
+app = FastAPI(title="Bounded-Contexts API", lifespan=lifespan)
 
 def get_session() -> Generator[Session, None, None]:
     with Session(engine) as session:
