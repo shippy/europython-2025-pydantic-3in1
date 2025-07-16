@@ -1,0 +1,11 @@
+{# rendered once per schema #}
+from __future__ import annotations
+from datetime import datetime
+from typing import List, Optional
+from sqlmodel import SQLModel, Field
+
+class {{ schema.title }}Row(SQLModel, table=True):  # table=True makes it a table
+{% for p in schema.properties.values() %}
+    {{ p.python_name }}: {{ p.type_hint }}
+{%- if p.default is not none %} = {{ p.default }}{% endif %}{% if p.name in schema.primary_keys %} = Field(primary_key=True){% endif %}
+{% endfor %}

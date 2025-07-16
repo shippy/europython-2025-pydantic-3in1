@@ -1,0 +1,10 @@
+from __future__ import annotations
+from dataclasses import dataclass
+from datetime import datetime
+from typing import List, Optional
+
+@dataclass(slots=True)
+class {{ schema.title }}:
+{% for p in schema.properties.values() %}
+    {{ p.python_name }}: {{ p.type_hint }}{% if p.default is not none %} = {{ p.default }}{% elif p.nullable %} | None = None{% endif %}
+{% endfor %}

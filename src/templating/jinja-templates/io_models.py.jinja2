@@ -1,0 +1,15 @@
+from __future__ import annotations
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict
+from typing import List, Optional
+
+class {{ schema.title }}In(BaseModel):
+{% for p in schema.properties.values() if p.name not in schema.read_only %}
+    {{ p.python_name }}: {{ p.type_hint }}{% if p.default is not none %} = {{ p.default }}{% endif %}
+{% endfor %}
+    model_config = ConfigDict(extra="forbid")
+
+class {{ schema.title }}Out(BaseModel):
+{% for p in schema.properties.values() if p.name in schema.read_only or p.name == "id" %}
+    {{ p.python_name }}: {{ p.type_hint }}
+{% endfor %}
