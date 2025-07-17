@@ -10,5 +10,8 @@ take2:
 take3-generate:
 	uv run python src/templating/generate.py
 
+take3-clean:
+	rm -f src/templating/generated/*.py src/templating/generated/*.json
+
 take3: take3-generate
 	uv run uvicorn templating.app:app --reload
