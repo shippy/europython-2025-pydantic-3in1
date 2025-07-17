@@ -1,5 +1,5 @@
-from datetime import datetime, UTC
-from sqlalchemy import JSON, Column, DateTime
+from datetime import datetime
+from sqlalchemy import JSON, Column
 from sqlmodel import SQLModel, Field
 from pydantic.json_schema import SkipJsonSchema
 
