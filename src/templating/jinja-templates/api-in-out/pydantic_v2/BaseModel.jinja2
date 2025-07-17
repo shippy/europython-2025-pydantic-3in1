@@ -1,0 +1,15 @@
+{%- for model in models %}
+{{ model.header }}
+
+class {{ model.class_name }}In(BaseModel):
+{%- for field in model.fields if not field.read_only %}
+    {{ field.name }}: {{ field.type_hint }}{% if field.default is not none %} = {{ field.default }}{% endif %}
+{%- endfor %}
+    model_config = ConfigDict(extra="forbid")
+
+class {{ model.class_name }}Out(BaseModel):
+{%- for field in model.fields if field.read_only or field.name == "id" %}
+    {{ field.name }}: {{ field.type_hint }}
+{%- endfor %}
+
+{% endfor %}

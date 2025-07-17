@@ -1,12 +1,10 @@
-# Custom comment!
-
-from __future__ import annotations
-from dataclasses import dataclass
-from datetime import datetime
-from typing import List, Optional
+{%- for model in models %}
+{{ model.header }}                       {# adds imports only once #}
 
 @dataclass(slots=True)
-class {{ schema.title }}:
-{% for p in schema.properties.values() %}
-    {{ p.python_name }}: {{ p.type_hint }}{% if p.default is not none %} = {{ p.default }}{% elif p.nullable %} | None = None{% endif %}
+class {{ model.class_name }}:
+{%- for field in model.fields %}
+    {{ field.name }}: {{ field.type_hint }}{% if field.default is not none %} = {{ field.default }}{% endif %}
+{%- endfor %}
+
 {% endfor %}

@@ -1,0 +1,9 @@
+{%- for model in models %}
+{{ model.header }}                       {# ← built-in macro: imports & future-annotations #}
+
+class {{ class_name }}(SQLModel, table=True):
+{%- for field in fields %}
+    {{ field.name }}: {{ field.type_hint }}{% if field.default is not none %} = {{ field.default }}{% endif %}{% if field.primary_key == True %} = Field(default=None, primary_key=True){% endif %}
+{%- endfor %}
+
+{% endfor %}
