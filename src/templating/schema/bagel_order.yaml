@@ -4,7 +4,7 @@ type: object
 properties:
   id:          {type: integer, readOnly: true}
   customerName: {type: string}
-  bagelType:   {enum: [plain, sesame, everything, poppy]}
+  bagelType:   {enum: [plain, sesame, everything, poppy], x-llm-desc: "Favor everything bagel unless stated otherwise"}
   toppings:    {type: array, items: {type: string}, default: []}
   quantity:    {type: integer, minimum: 1, default: 1}
   status:      {enum: [pending, baking, delivered], default: pending, readOnly: true}
