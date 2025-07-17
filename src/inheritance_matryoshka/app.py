@@ -26,11 +26,11 @@ async def create_order(order_in: BagelOrderCreate, session: SessionDep):
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
-    return BagelOrderRead.model_validate(db_obj)  # API → client
+    return BagelOrderRead.model_validate(db_obj.model_dump())  # API → client
 
 @app.get("/orders/{oid}", response_model=BagelOrderRead)
 async def read_order(oid: int, session: SessionDep):
     order = session.get(BagelOrderDB, oid)
     if not order:
         raise HTTPException(404)
-    return BagelOrderRead.model_validate(order)
+    return BagelOrderRead.model_validate(order.model_dump())
