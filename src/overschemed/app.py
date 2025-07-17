@@ -9,7 +9,7 @@ from typing import Annotated, Generator
 from fastapi import Depends
 from contextlib import asynccontextmanager
 
-engine = create_engine("sqlite:///:memory:", echo=False)
+engine = create_engine("sqlite:///take2.db", echo=False, connect_args={"check_same_thread": False})
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -4,7 +4,7 @@ from inheritance_matryoshka.models import BagelOrderDB, BagelOrderCreate, BagelO
 from contextlib import asynccontextmanager
 from typing import Annotated, Generator
 
-engine = create_engine("sqlite:///:memory:", echo=False)
+engine = create_engine("sqlite:///take1.db", echo=False, connect_args={"check_same_thread": False})
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
