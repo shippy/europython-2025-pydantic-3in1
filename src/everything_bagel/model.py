@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 from sqlalchemy import JSON, Column, DateTime
 from sqlmodel import SQLModel, Field
+from pydantic.json_schema import SkipJsonSchema
 
 class BagelOrder(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -12,3 +13,4 @@ class BagelOrder(SQLModel, table=True):
     created_at: datetime = Field(
         default_factory=datetime.now,
     )
+    admin_notes: SkipJsonSchema[str | None]
