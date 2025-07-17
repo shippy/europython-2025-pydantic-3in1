@@ -1,28 +1,48 @@
+"""
+Run:
+    python generate.py
+Results land in generated/api_models.py, domain.py, db_models.py, llm_schema.json
+"""
 from pathlib import Path
-from datamodel_code_generator import InputFileType, generate
-from datamodel_code_generator.model import pydantic as _dummy  # noqa: F401
+import json, yaml
+from datamodel_code_generator import generate, InputFileType, DataModelType
 
-SCHEMA = Path("schema/bagel_order.yaml")
-OUT    = Path("generated")
-GEN_TMP = Path("jinja-templates")
+ROOT     = Path(__file__).parent
+SCHEMA   = ROOT / "schema" / "bagel_order.yaml"
+OUTPUT   = ROOT / "generated"
+TEMPLDIR = ROOT / "templates"
 
-OUT.mkdir(exist_ok=True)
-# --- API models ---
+# 1) Pydantic DTOs (API) ------------------------------------------------------
 generate(
-    input=SCHEMA.as_posix(),
+    SCHEMA.read_text(),
     input_file_type=InputFileType.JsonSchema,
-    output=(OUT / "api_models.py").as_posix(),
-    custom_template_dir=GEN_TMP.as_posix(),
-    template="io_models.py.jinja2",
+    output_model_type=DataModelType.PydanticV2BaseModel,
+    output=OUTPUT / "api_models.py",
+    custom_template_dir=TEMPLDIR / "pydantic",
 )
-# --- SQLModel table ---
+
+# 2) Domain dataclass ---------------------------------------------------------
 generate(
-    input=SCHEMA.as_posix(),
+    SCHEMA.read_text(),
     input_file_type=InputFileType.JsonSchema,
-    output=(OUT / "db_models.py").as_posix(),
-    custom_template_dir=GEN_TMP.as_posix(),
-    template="sqlmodel.py.jinja2",
+    output_model_type=DataModelType.DataclassesDataclass,
+    output=OUTPUT / "domain.py",
+    custom_template_dir=TEMPLDIR / "dataclass",
 )
-# --- JSON schema for LLMs (verbatim copy) ---
-(OUT / "llm_schema.json").write_bytes(SCHEMA.read_bytes())
-print("Generated:", *OUT.iterdir(), sep="\n  ")
+
+# 3) SQLModel table -----------------------------------------------------------
+generate(
+    SCHEMA.read_text(),
+    input_file_type=InputFileType.JsonSchema,
+    output_model_type=DataModelType.PydanticV2BaseModel,  # we’re still hijacking BaseModel
+    output=OUTPUT / "db_models.py",
+    custom_template_dir=TEMPLDIR / "sqlmodel",
+)
+
+# 4) LLM schema with prompt-only descriptions --------------------------------
+spec = yaml.safe_load(SCHEMA.read_text())
+for prop in spec["properties"].values():
+    if "x-llm-desc" in prop:
+        prop["description"] = prop.pop("x-llm-desc")  # inject, drop original
+(OUTPUT / "llm_schema.json").write_text(json.dumps(spec, indent=2))
+print("Generated →", *OUTPUT.iterdir(), sep="\n  ")

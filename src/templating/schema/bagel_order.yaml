@@ -2,12 +2,11 @@ $schema: "https://json-schema.org/draft/2020-12/schema"
 title: BagelOrder
 type: object
 properties:
-  id:          {type: integer}
+  id:          {type: integer, readOnly: true}
   customerName: {type: string}
   bagelType:   {enum: [plain, sesame, everything, poppy]}
   toppings:    {type: array, items: {type: string}, default: []}
   quantity:    {type: integer, minimum: 1, default: 1}
-  status:      {enum: [pending, baking, delivered], default: pending}
-  createdAt:   {type: string, format: date-time}
+  status:      {enum: [pending, baking, delivered], default: pending, readOnly: true}
+  createdAt:   {type: string, format: date-time, readOnly: true}
 required: [customerName, bagelType]
-readOnly: [id, status, createdAt]
