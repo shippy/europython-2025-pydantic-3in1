@@ -2,7 +2,7 @@ $schema: "https://json-schema.org/draft/2020-12/schema"
 title: BagelOrder
 type: object
 properties:
-  id:          {type: integer, readOnly: true}
+  id:          {type: integer, readOnly: true, primaryKey: true}
   customerName: {type: string}
   bagelType:   {enum: [plain, sesame, everything, poppy], x-llm-desc: "Favor everything bagel unless stated otherwise"}
   toppings:    {type: array, items: {type: string}, default: []}
