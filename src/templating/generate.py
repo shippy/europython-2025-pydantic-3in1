@@ -10,7 +10,7 @@ from datamodel_code_generator import generate, InputFileType, DataModelType
 ROOT     = Path(__file__).parent
 SCHEMA   = ROOT / "schema" / "bagel_order.yaml"
 OUTPUT   = ROOT / "generated"
-TEMPLDIR = ROOT / "templates"
+TEMPLDIR = ROOT / "jinja-templates"
 
 # 1) Pydantic DTOs (API) ------------------------------------------------------
 generate(
@@ -18,7 +18,7 @@ generate(
     input_file_type=InputFileType.JsonSchema,
     output_model_type=DataModelType.PydanticV2BaseModel,
     output=OUTPUT / "api_models.py",
-    custom_template_dir=TEMPLDIR / "pydantic",
+    custom_template_dir=TEMPLDIR / "api-in-out",
 )
 
 # 2) Domain dataclass ---------------------------------------------------------
