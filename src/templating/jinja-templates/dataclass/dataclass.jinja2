@@ -1,10 +1,7 @@
-{%- for model in models %}
-{{ model.header }}                       {# adds imports only once #}
+{{ header }}                       {# adds imports only once #}
 
 @dataclass(slots=True)
-class {{ model.class_name }}:
-{%- for field in model.fields %}
+class {{ class_name }}:
+{%- for field in fields %}
     {{ field.name }}: {{ field.type_hint }}{% if field.default is not none %} = {{ field.default }}{% endif %}
 {%- endfor %}
-
-{% endfor %}
