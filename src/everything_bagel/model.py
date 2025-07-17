@@ -10,6 +10,5 @@ class BagelOrder(SQLModel, table=True):
     quantity: int = 1
     status: str = "pending"  # will round‐trip to clients & LLMs
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(tz=UTC),
-        sa_column=Column(DateTime(timezone=True))
+        default_factory=datetime.now,
     )
